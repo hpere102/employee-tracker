@@ -14,3 +14,13 @@ VALUES
 ('Accountant', 125000.00, 3),
 ('Lawyer', 190000.00, 4),
 ('Legal Team Lead', 250000.00, 4);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES 
+('Daniel', 'Allen', 1, NULL),
+('Ellie', 'Mack', 5, NULL),
+('Gary', 'Lile', 7, NULL),
+('Aaron', 'Smith', 4, NULL),
+('Sam', 'Leichler', 3, NULL),
+('Amanda', 'Peck', 2, NULL),
+('David', 'Summers', 6, NULL);
