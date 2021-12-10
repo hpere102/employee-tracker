@@ -2,7 +2,7 @@
 
 ## About this program
 
-Employee Database tracker allows the user to explore the data base of a specific company and vuew its departments, roles, and employee information concerning their roles within the company. The user can also modify this database.
+Employee Database Tracker allows the user to explore the database of a specific company and view its departments, roles, and employee information concerning their roles within the company. The user can also modify this database.
 
 ![Application screenshot](media/screenshot-employee.png)
 
