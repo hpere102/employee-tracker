@@ -65,7 +65,7 @@ const promptUser = () => {
 }
 
 
-        getDepartments = () => {
+     getDepartments = () => {
             console.log("Showing all departments");
 
         
@@ -76,9 +76,9 @@ const promptUser = () => {
                     promptUser();
                 });
 
-            };   
+    };   
         
-        getRoles = () => {
+     getRoles = () => {
             console.log("Showing all roles");
     
            
@@ -92,9 +92,9 @@ const promptUser = () => {
                     promptUser();
                 });
     
-            }; 
+    }; 
             
-        getEmployees = () => {
+     getEmployees = () => {
         console.log("Showing all employees");
 
        
@@ -110,9 +110,9 @@ const promptUser = () => {
                 promptUser();
             });
 
-        };       
+    };       
 
-        addDepartment = () => {
+     addDepartment = () => {
             inquirer.prompt([
                 {
                 type:'input',
@@ -178,49 +178,54 @@ const promptUser = () => {
                 }
     
                 },
-            {
-            type:'input',
-            name: 'newDepId',
-            message: `What department does this role belong to?
-
-  1. Engineering
-  2. Sales
-  3. Finance
-  4. Legal
-                              
-  Please enter the NUMBER of the department listed next to it!
-  
-  `,
-
-            validate : newDepId => {
-            if (newDepId) {
-              return true;
-            } else {
-             console.log("Please choose a department");
-             return false;
-              }
-           }
-        
-        }
+            
         ])
         .then (answer => {
-            const params = [answer.newRole, answer.newSalary, answer.newDepId];
+            const params = [answer.newRole, answer.newSalary];
 
-            const sql = `INSERT INTO roles (title, salary, department_id)
-                 VALUES (?,?,?)`;
+              const sql2 = `SELECT name, id FROM departments`;
 
-                 db.query(sql, params, (err, result) => {
-                    if (err) { 
-                        res.status(400).json({ error: err.message });
-                    return;
-                    }
+              db.query(sql2, params, (err, data) => {
+                if (err) throw err;
 
-                    console.log("Added " + answer.newRole+ " to roles")
+                const departmentSQL = data.map(({ name, id }) => ({ name: name, value: id }));
 
-                    getRoles();
+                
+                        
+                    inquirer.prompt ([
+                        {
+                            type: 'list',
+                            name: 'departmentSQL',
+                            message: 'What department does this role belong to?',
+                            choices: departmentSQL
+                        }
+                    ])
+                    .then((answer2) => {
+
+                        const departmentSQL = answer2.departmentSQL;
+                        params.push(departmentSQL);
+                      
+
+                        const sql = `INSERT INTO roles (title, salary, department_id)
+                        VALUES (?,?,?)`;
+
+                        db.query(sql, params, (err, result) => {
+                            if (err) throw err;
+                            console.log("Added " + answer.newRole + " to roles")
+
+                            getRoles();
+
+                        }
+                        )
+                        
+                    })
+
                 })
-          })
+            
+            }) 
+        
     };
+
 
 
     addEmployee = () => {
@@ -228,7 +233,7 @@ const promptUser = () => {
             {
             type:'input',
             name: 'firstName',
-            message: 'What is the employees First Name',
+            message: 'What is the employees first name?',
             validate : firstName => {
                 if (firstName) {
                     return true;
@@ -253,51 +258,56 @@ const promptUser = () => {
                 }
     
                 },
-            {
-            type:'input',
-            name: 'newRoleId',
-            message: `What is this employees role?
-
-  1. 
-  2. Sales
-  3. Finance
-  4. Legal
-                              
-  Please enter the NUMBER of the department listed next to it!
-  
-  `,
-
-            validate : newDepId => {
-            if (newDepId) {
-              return true;
-            } else {
-             console.log("Please choose a department");
-             return false;
-              }
-           }
-        
-        }
+            
         ])
         .then (answer => {
-            const params = [answer.newRole, answer.newSalary, answer.newDepId];
+            const params = [answer.firstName, answer.lastName];
 
-            const sql = `INSERT INTO roles (title, salary, department_id)
-                 VALUES (?,?,?)`;
+              const sql2 = `SELECT title, id FROM roles`;
 
-                 db.query(sql, params, (err, result) => {
-                    if (err) { 
-                        res.status(400).json({ error: err.message });
-                    return;
-                    }
+              db.query(sql2, params, (err, data) => {
+                if (err) throw err;
 
-                    console.log("Added " + answer.newRole+ " to roles")
+                const departmentSQL = data.map(({ title, id }) => ({ name: title, value: id }));
 
-                    getRoles();
+                
+                        
+                    inquirer.prompt ([
+                        {
+                            type: 'list',
+                            name: 'departmentSQL',
+                            message: 'What role is this employee filling out?',
+                            choices: departmentSQL
+                        }
+                    ])
+                    .then((answer2) => {
+
+                        const departmentSQL = answer2.departmentSQL;
+                        params.push(departmentSQL);
+                      
+
+                        const sql = `INSERT INTO employees (first_name, last_name, role_id)
+                        VALUES (?,?,?)`;
+
+                        db.query(sql, params, (err, result) => {
+                            if (err) throw err;
+                            console.log("Added " + answer.firstName + " " + answer.lastName + " to list of employees")
+
+                            getEmployees();
+
+                        }
+                        )
+                        
+                    })
+
                 })
-          })
-    }
-    
             
+            }) 
+        
+    };
+
+
+    
     
   
 
